@@ -1,0 +1,19 @@
+services:
+  buffering-problems:
+    build: service
+    restart: unless-stopped
+    ports:
+      - '2222:2222'
+    command: 'socat TCP-LISTEN:2222,reuseaddr,fork EXEC:/chall/buffering-problems'
+    volumes:
+      - './service/:/chall:ro'
+      - './devices:/devices'
+
+  cleaner:
+    build: cleaner
+    restart: unless-stopped
+    volumes:
+      - "./devices:/tmp/devices"
+    depends_on:
+      - buffering-problems
+    stop_grace_period: 2s
